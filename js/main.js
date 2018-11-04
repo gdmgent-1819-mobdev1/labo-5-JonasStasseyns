@@ -63,6 +63,10 @@ document.querySelector('.signin-submit').addEventListener('click', function(e){
         let uid = user.uid;
         let providerData = user.providerData;
         
+        //Insert current user email in status element
+        document.querySelector('.status').innerHTML = email + '<p class="signout">Sign Out</p>';
+        document.querySelector('.want-to-signin').style.display = 'none';
+        
         if(!emailVerified){
             user.sendEmailVerification().then(function() {
               // Email sent.
@@ -81,6 +85,8 @@ document.querySelector('.signin-submit').addEventListener('click', function(e){
 
 });
 
+
+
 //Forgot password
 document.querySelector('.reset-submit').addEventListener('click', function(e){
     e.preventDefault();
@@ -93,4 +99,47 @@ document.querySelector('.reset-submit').addEventListener('click', function(e){
     }).catch(function(error) {
       // An error happened.
     });
+});
+
+//Check loggedin
+firebase.auth().onAuthStateChanged(function(user) {
+    if (user) {
+        // User is signed in.
+        let displayName = user.displayName;
+        let email = user.email;
+        let emailVerified = user.emailVerified;
+        let photoURL = user.photoURL;
+        let isAnonymous = user.isAnonymous;
+        let uid = user.uid;
+        let providerData = user.providerData;
+        
+        //Insert current user email in status element
+        document.querySelector('.status').innerHTML = email + '<p class="signout">Sign Out</p>';
+        document.querySelector('.want-to-signin').style.display = 'none';
+        
+        //Sign Out
+        document.querySelector('.signout').addEventListener('click', function(){
+            firebase.auth().signOut().then(function() {
+                console.log('Signed Out');
+                document.querySelector('.want-to-signin').style.display = 'block';
+                document.querySelector('.status').innerHTML = '';
+            }, function(error) {
+                console.error('Sign Out Error', error);
+            });
+        });
+        
+        if(!emailVerified){
+            user.sendEmailVerification().then(function() {
+              // Email sent.
+            }).catch(function(error) {
+              // An error happened.
+            });
+        }else{
+            console.log('verified');
+        }
+        
+        } else {
+            document.querySelector('.want-to-signin').style.display = 'block';
+            signinForm.style.display = 'block';
+    }
 });

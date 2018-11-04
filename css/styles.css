@@ -11,9 +11,6 @@ body {
     width: 30vw;
     margin: 20vh auto 0 auto;
     box-sizing: border-box;
-}
-
-.signup-form, .reset-form {
     display: none;
 }
 
@@ -38,4 +35,22 @@ button {
     border-radius: 0.5vh;
     background-color: dodgerblue;
     color: white;
+}
+
+.status {
+    position: absolute;
+    top: 1vh;
+    left: 1vw;
+}
+
+.want-to-signin {
+    display: none;
+    position: absolute;
+    top: 1vh;
+    right: 1vw;
+}
+
+.signout {
+    color: dodgerblue;
+    cursor: pointer;
 }
