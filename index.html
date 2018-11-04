@@ -10,18 +10,23 @@
 <body>
     
 	<div class="wrapper">
-		
-        <p>Sign up</p>
-        <label>E-mail address<input type="email" class="register-email" placeholder="email"></label>
-        <label>Password<input type="password" class="register-password" placeholder="password"></label>
-        <button class="register-submit">Register</button>
-
-        <p>Sign in</p>
-        <label>E-mail address<input type="email" class="signin-email" placeholder="email"></label>
-        <label>Password<input type="password" class="signin-password" placeholder="password"></label>
-        <button class="signin-submit">Register</button>
         
-        <button class="not">notifyme</button>
+        <form class="signin-form">
+            <h1>Sign In</h1>
+            <p class="signin-error"></p>
+            <label>E-mail address</label><input type="email" class="signin-email" placeholder="email">
+            <label>Password</label><input type="password" class="signin-password" placeholder="password">
+            <button class="signin-submit">Sign in</button><button class="switch-to-signup">Create account</button>
+        </form>
+
+        <form class="signup-form">
+            <h1>Sign Up</h1>
+            <p class="signup-error"></p>
+            <label>E-mail address</label><input type="email" class="signup-email" placeholder="email">
+            <label>Password</label><input type="password" class="signup-password" placeholder="password">
+            <button class="signup-submit">Sign up</button><button class="switch-to-signin">Already have an account?</button>
+        </form>
+        
 
     </div>
     

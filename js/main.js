@@ -9,31 +9,39 @@
   };
   firebase.initializeApp(config);
 
-//Notification
-console.log(Notification.permission);
-document.querySelector('.not').addEventListener('click', function(){
-    Notification.requestPermission();
-    setTimeout(function(){
-        console.log(Notification.permission);
-    }, 3000);
+const signupForm = document.querySelector('.signup-form');
+const signinForm = document.querySelector('.signin-form');
+
+//Toggle Forms
+document.querySelector('.switch-to-signup').addEventListener('click', function(e){
+    e.preventDefault();
+    signupForm.style.display = 'block';
+    signinForm.style.display = 'none';
+});
+document.querySelector('.switch-to-signin').addEventListener('click', function(e){
+    e.preventDefault();
+    signupForm.style.display = 'none';
+    signinForm.style.display = 'block';
 });
 
 //Register
-document.querySelector('.register-submit').addEventListener('click', function(){
-    let registerFormEmail = document.querySelector('.register-email').value;
-    let registerFormPass = document.querySelector('.register-password').value;
+document.querySelector('.signup-submit').addEventListener('click', function(e){
+    e.preventDefault();
+    let registerFormEmail = document.querySelector('.signup-email').value;
+    let registerFormPass = document.querySelector('.signup-password').value;
     console.log(registerFormEmail + registerFormPass);
     firebase.auth().createUserWithEmailAndPassword(registerFormEmail, registerFormPass).catch(function(error) {
-      console.log(error.message);
+        document.querySelector('.signup-error').innerHTML = error.message;
     });
 });
 
 //Login
-document.querySelector('.signin-submit').addEventListener('click', function(){
+document.querySelector('.signin-submit').addEventListener('click', function(e){
+    e.preventDefault();
     let signinFormEmail = document.querySelector('.signin-email').value;
     let signinFormPass = document.querySelector('.signin-password').value;
     firebase.auth().signInWithEmailAndPassword(signinFormEmail, signinFormPass).catch(function(error) {
-      console.log(error.message);
+      document.querySelector('.signin-error').innerHTML = error.message;
     });
     firebase.auth().onAuthStateChanged(function(user) {
     if (user) {
