@@ -7,13 +7,13 @@ body {
     font-family: 'Open Sans', sans-serif;
 }
 
-.signup-form, .signin-form {
+.signup-form, .signin-form, .reset-form {
     width: 30vw;
     margin: 20vh auto 0 auto;
     box-sizing: border-box;
 }
 
-.signup-form {
+.signup-form, .reset-form {
     display: none;
 }
 

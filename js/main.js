@@ -11,17 +11,26 @@
 
 const signupForm = document.querySelector('.signup-form');
 const signinForm = document.querySelector('.signin-form');
+const resetForm = document.querySelector('.reset-form');
 
 //Toggle Forms
 document.querySelector('.switch-to-signup').addEventListener('click', function(e){
     e.preventDefault();
     signupForm.style.display = 'block';
     signinForm.style.display = 'none';
+    resetForm.style.display = 'none';
 });
 document.querySelector('.switch-to-signin').addEventListener('click', function(e){
     e.preventDefault();
     signupForm.style.display = 'none';
     signinForm.style.display = 'block';
+    resetForm.style.display = 'none';
+});
+document.querySelector('.reset-password').addEventListener('click', function(e){
+    e.preventDefault();
+    signupForm.style.display = 'none';
+    signinForm.style.display = 'none';
+    resetForm.style.display = 'block';
 });
 
 //Register
@@ -72,12 +81,16 @@ document.querySelector('.signin-submit').addEventListener('click', function(e){
 
 });
 
+//Forgot password
+document.querySelector('.reset-submit').addEventListener('click', function(e){
+    e.preventDefault();
+    var auth = firebase.auth();
+    var emailAddress = document.querySelector('.reset-email').value;
 
-//Send verification mail after first sign-in
-//let user = firebase.auth().currentUser;
-//
-//user.sendEmailVerification().then(function() {
-//  // Email sent.
-//}).catch(function(error) {
-//  // An error happened.
-//});
+    auth.sendPasswordResetEmail(emailAddress).then(function() {
+      // Email sent.
+        document.querySelector('.reset-error').innerHTML = 'An email with a link to reset your password has been sent.';
+    }).catch(function(error) {
+      // An error happened.
+    });
+});
