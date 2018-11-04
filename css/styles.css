@@ -54,3 +54,9 @@ button {
     color: dodgerblue;
     cursor: pointer;
 }
+
+.post-form {
+    position: absolute;
+    bottom: 0;
+    width: 100vw;
+}

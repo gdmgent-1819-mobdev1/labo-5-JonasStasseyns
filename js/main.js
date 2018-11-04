@@ -1,5 +1,8 @@
+//Replace editor
+CKEDITOR.replace('editor1');
+
 // Initialize Firebase
-  var config = {
+  let config = {
     apiKey: "AIzaSyDt_a9f_Qs0emOoHsBJfCJgZL7klWsjs2s",
     authDomain: "labo-5-jonasstasseyns.firebaseapp.com",
     databaseURL: "https://labo-5-jonasstasseyns.firebaseio.com",
@@ -12,6 +15,8 @@
 const signupForm = document.querySelector('.signup-form');
 const signinForm = document.querySelector('.signin-form');
 const resetForm = document.querySelector('.reset-form');
+
+let currentUser = '';
 
 //Toggle Forms
 document.querySelector('.switch-to-signup').addEventListener('click', function(e){
@@ -57,6 +62,7 @@ document.querySelector('.signin-submit').addEventListener('click', function(e){
         // User is signed in.
         let displayName = user.displayName;
         let email = user.email;
+        currentUser = user.name;
         let emailVerified = user.emailVerified;
         let photoURL = user.photoURL;
         let isAnonymous = user.isAnonymous;
@@ -90,8 +96,8 @@ document.querySelector('.signin-submit').addEventListener('click', function(e){
 //Forgot password
 document.querySelector('.reset-submit').addEventListener('click', function(e){
     e.preventDefault();
-    var auth = firebase.auth();
-    var emailAddress = document.querySelector('.reset-email').value;
+    let auth = firebase.auth();
+    let emailAddress = document.querySelector('.reset-email').value;
 
     auth.sendPasswordResetEmail(emailAddress).then(function() {
       // Email sent.
@@ -142,4 +148,32 @@ firebase.auth().onAuthStateChanged(function(user) {
             document.querySelector('.want-to-signin').style.display = 'block';
             signinForm.style.display = 'block';
     }
+});
+
+//Instantiate Database
+let db = firebase.database();
+
+//Database Insert
+function blogPost(title, body, dateTime, author) {
+  firebase.database().ref('blogposts/' + currentUser).set({
+    title: title,
+    body: body,
+    date: dateTime
+  });
+}
+
+//BlogPost
+document.querySelector('.blogpost-submit').addEventListener('click', function(e){
+    e.preventDefault();
+    let title = document.querySelector('.blogpost-title').value;
+    let body = document.querySelector('.blogpost-editor').value;
+    console.log(body);
+    let today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth()+1; //January is 0!
+    var yyyy = today.getFullYear();
+    let dateTime = dd + '/' + mm + '/' + yyyy;
+    console.log(dateTime);
+    let author = currentUser;
+    blogPost(title, body, dateTime, author);
 });
