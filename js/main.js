@@ -177,4 +177,17 @@ document.querySelector('.blogpost-submit').addEventListener('click', function(e)
     let author = currentUser;
     console.log(author);
     blogPost(title, body, dateTime, author);
-}); 
+});
+
+//Blogpost read
+document.querySelector('.postcontainer').innerHTML = '';
+var leadsRef = firebase.database().ref('blogposts');
+leadsRef.on('value', function(snapshot) {
+    snapshot.forEach(function(childSnapshot) {
+        data = childSnapshot.val();
+        console.log(data);
+        document.querySelector('.postcontainer').innerHTML += '<h1>' + data.title + '</h1>';
+        document.querySelector('.postcontainer').innerHTML += '<p class="authortime">' + data.author + ' - ' + data.date + '</p>';
+        document.querySelector('.postcontainer').innerHTML += '<p>' + data.body + '</p><hr>';
+    });
+});

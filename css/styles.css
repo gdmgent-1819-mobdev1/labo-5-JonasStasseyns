@@ -60,3 +60,13 @@ button {
     bottom: 0;
     width: 100vw;
 }
+
+.postcontainer {
+    width: 50vw;
+    margin: 10vh auto 0 auto;
+}
+
+.authortime {
+    font-size: 0.8em;
+    color: 
+}
