@@ -71,6 +71,7 @@ document.querySelector('.signin-submit').addEventListener('click', function(e){
         
         //Insert current user email in status element
         document.querySelector('.status').innerHTML = email + '<p class="signout">Sign Out</p>';
+        currentUser = email;
         document.querySelector('.want-to-signin').style.display = 'none';
         
         if(!emailVerified){
@@ -121,6 +122,7 @@ firebase.auth().onAuthStateChanged(function(user) {
         
         //Insert current user email in status element
         document.querySelector('.status').innerHTML = email + '<p class="signout">Sign Out</p>';
+        currentUser = email;
         document.querySelector('.want-to-signin').style.display = 'none';
         
         //Sign Out
@@ -150,15 +152,13 @@ firebase.auth().onAuthStateChanged(function(user) {
     }
 });
 
-//Instantiate Database
-let db = firebase.database();
-
 //Database Insert
 function blogPost(title, body, dateTime, author) {
-  firebase.database().ref('blogposts/' + currentUser).set({
+  firebase.database().ref('blogposts').push({
     title: title,
     body: body,
-    date: dateTime
+    date: dateTime,
+    author: author
   });
 }
 
@@ -166,14 +166,15 @@ function blogPost(title, body, dateTime, author) {
 document.querySelector('.blogpost-submit').addEventListener('click', function(e){
     e.preventDefault();
     let title = document.querySelector('.blogpost-title').value;
-    let body = document.querySelector('.blogpost-editor').value;
+    let body = CKEDITOR.instances.editor1.getData();
     console.log(body);
     let today = new Date();
     var dd = today.getDate();
-    var mm = today.getMonth()+1; //January is 0!
+    var mm = today.getMonth()+1;
     var yyyy = today.getFullYear();
     let dateTime = dd + '/' + mm + '/' + yyyy;
     console.log(dateTime);
     let author = currentUser;
+    console.log(author);
     blogPost(title, body, dateTime, author);
-});
+}); 
