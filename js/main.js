@@ -61,6 +61,7 @@ document.querySelector('.signin-submit').addEventListener('click', function(e){
     if (user) {
         // User is signed in.
         let displayName = user.displayName;
+        console.log(displayName);
         let email = user.email;
         currentUser = user.name;
         let emailVerified = user.emailVerified;
@@ -169,9 +170,9 @@ document.querySelector('.blogpost-submit').addEventListener('click', function(e)
     let body = CKEDITOR.instances.editor1.getData();
     console.log(body);
     let today = new Date();
-    var dd = today.getDate();
-    var mm = today.getMonth()+1;
-    var yyyy = today.getFullYear();
+    let dd = today.getDate();
+    let mm = today.getMonth()+1;
+    let yyyy = today.getFullYear();
     let dateTime = dd + '/' + mm + '/' + yyyy;
     console.log(dateTime);
     let author = currentUser;
@@ -180,14 +181,38 @@ document.querySelector('.blogpost-submit').addEventListener('click', function(e)
 });
 
 //Blogpost read
-document.querySelector('.postcontainer').innerHTML = '';
-var leadsRef = firebase.database().ref('blogposts');
-leadsRef.on('value', function(snapshot) {
-    snapshot.forEach(function(childSnapshot) {
-        data = childSnapshot.val();
-        console.log(data);
-        document.querySelector('.postcontainer').innerHTML += '<h1>' + data.title + '</h1>';
-        document.querySelector('.postcontainer').innerHTML += '<p class="authortime">' + data.author + ' - ' + data.date + '</p>';
-        document.querySelector('.postcontainer').innerHTML += '<p>' + data.body + '</p><hr>';
+function firebaseRead(){
+    document.querySelector('.postcontainer').innerHTML = '';
+    let leadsRef = firebase.database().ref('blogposts');
+    leadsRef.on('value', function(snapshot) {
+        snapshot.forEach(function(childSnapshot) {
+            data = childSnapshot.val();
+            console.log(data);
+            document.querySelector('.postcontainer').innerHTML += '<h1>' + data.title + '</h1>';
+            document.querySelector('.postcontainer').innerHTML += '<p class="authortime">' + data.author + ' - ' + data.date + '</p>';
+            document.querySelector('.postcontainer').innerHTML += '<p>' + data.body + '</p><button id="' + childSnapshot.key + '" class="remove-btn">Remove</button><hr class="inter-post">';
+
+
+        });
+        renderEventListeners();
     });
-});
+}
+
+function renderEventListeners() {
+    let removeButtons = document.querySelectorAll('.remove-btn');
+    for(i=0;i<removeButtons.length;i++){
+        removeButtons[i].addEventListener('click', remove);
+    }
+}
+
+
+
+function remove(event){
+    let key = event.currentTarget.id;
+    console.log(key);
+    firebase.database().ref('blogposts/' + key).remove();
+    firebaseRead();
+}
+
+//Default Calls
+firebaseRead();
