@@ -18,6 +18,22 @@ const resetForm = document.querySelector('.reset-form');
 
 let currentUser = '';
 
+function notifyMe(text) {
+    if (!("Notification" in window)) {
+        alert("This browser does not support desktop notification");
+    }
+    else if (Notification.permission === "granted") {
+        new Notification(text);
+    }
+    else if (Notification.permission !== "denied") {
+        Notification.requestPermission().then(function (permission) {
+            if (permission === "granted") {
+                new Notification(text);
+            }
+        });
+    }
+}
+
 //Toggle Forms
 document.querySelector('.switch-to-signup').addEventListener('click', function (e) {
     e.preventDefault();
@@ -48,7 +64,9 @@ document.querySelector('.signup-submit').addEventListener('click', function (e) 
     let registerFormEmail = document.querySelector('.signup-email').value;
     let registerFormPass = document.querySelector('.signup-password').value;
     console.log(registerFormEmail + registerFormPass);
-    firebase.auth().createUserWithEmailAndPassword(registerFormEmail, registerFormPass).catch(function (error) {
+    firebase.auth().createUserWithEmailAndPassword(registerFormEmail, registerFormPass).then(function(){
+        notifyMe('You have registered successfully');
+    }).catch(function (error) {
         document.querySelector('.signup-error').innerHTML = error.message;
     });
 });
@@ -59,6 +77,7 @@ document.querySelector('.signin-submit').addEventListener('click', function (e) 
     let signinFormEmail = document.querySelector('.signin-email').value;
     let signinFormPass = document.querySelector('.signin-password').value;
     firebase.auth().signInWithEmailAndPassword(signinFormEmail, signinFormPass).then(function(){
+        notifyMe('You have logged in successfully');
         checkLoggedIn();
     }).catch(function (error) {
         document.querySelector('.signin-error').innerHTML = error.message;
@@ -134,14 +153,14 @@ function blogPost(title, body, dateTime, author) {
         date: dateTime,
         author: author
     });
+    notifyMe('Your message was posted successfully');
 }
 
 //Create BlogPost
 document.querySelector('.blogpost-submit').addEventListener('click', function (e) {
     e.preventDefault();
     let title = document.querySelector('.blogpost-title').value;
-    let body = CKEDITOR.instances.editor1.getData();
-    console.log(body);
+    let body = CKEDITOR.instances.editor1.document.getBody().getText();
     let today = new Date();
     let dd = today.getDate();
     let mm = today.getMonth() + 1;
@@ -175,13 +194,12 @@ function firebaseRead() {
             data = childSnapshot.val();
             console.log(data);
             let content = '';
-            content += '<h1>' + data.title + '</h1>';
+            content += '<h1 id="' + childSnapshot.key + '">' + data.title + '</h1>';
             content += '<p class="authortime">' + data.author + ' - ' + data.date + '</p>';
-            content += '<p>' + data.body + '</p>';
+            content += '<p id="' + childSnapshot.key + '">' + data.body + '</p>';
             if(data.author == currentUser){
                 content += '<button id="' + childSnapshot.key + '" class="remove-btn">Remove</button><button id="' + childSnapshot.key + '" class="edit-btn">Edit post</button><hr class="inter-post">';
             }
-
             document.querySelector('.postcontainer').insertAdjacentHTML('afterbegin', content);
         });
         renderEventListeners();
@@ -194,20 +212,33 @@ function renderEventListeners() {
         removeButtons[i].addEventListener('click', remove);
     }
     let editButtons = document.querySelectorAll('.edit-btn');
-    for(butotn in editButtons){
-        button.addEventListener('click', showPostEditor);
+    for(i = 0; i < editButtons.length; i++){
+        console.log("update btn yey");
+        editButtons[i].addEventListener('click', function(e){
+            document.querySelector('.post-form').style.display = 'block';
+            document.querySelector('.blogpost-submit').style.display = 'none';
+            document.querySelector('.blog-update-submit').style.display = 'block';
+            document.querySelector('.blog-update-submit').id = e.currentTarget.id;
+            document.querySelector('.blogpost-title').value = document.querySelector('h1#' + e.currentTarget.id).innerHTML;
+            CKEDITOR.instances.editor1.setData(document.querySelector('p#' + e.currentTarget.id).innerHTML);
+        });
     }
 }
+
+document.querySelector('.blog-update-submit').addEventListener('click', function(e){
+    let title = document.querySelector('.blogpost-title').value;
+    let body = CKEDITOR.instances.editor1.document.getBody().getText();
+    firebase.database().ref('blogposts/' + e.currentTarget.id).update({
+        title: title,
+        body: body
+    });
+});
 
 function remove(event) {
     let key = event.currentTarget.id;
     console.log(key);
     firebase.database().ref('blogposts/' + key).remove();
     firebaseRead();
-}
-
-function showPostEditor(){
-
 }
 
 //Default Calls

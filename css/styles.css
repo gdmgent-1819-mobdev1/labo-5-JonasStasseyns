@@ -93,3 +93,7 @@ p {
     font-size: 0.9em;
     margin-bottom: 2vh;
 }
+
+.blog-update-submit {
+    display: none;
+}
