@@ -179,7 +179,7 @@ function firebaseRead() {
             content += '<p class="authortime">' + data.author + ' - ' + data.date + '</p>';
             content += '<p>' + data.body + '</p>';
             if(data.author == currentUser){
-                content += '<button id="' + childSnapshot.key + '" class="remove-btn">Remove</button><button class="edit-btn">Edit post</button><hr class="inter-post">';
+                content += '<button id="' + childSnapshot.key + '" class="remove-btn">Remove</button><button id="' + childSnapshot.key + '" class="edit-btn">Edit post</button><hr class="inter-post">';
             }
 
             document.querySelector('.postcontainer').insertAdjacentHTML('afterbegin', content);
@@ -193,6 +193,10 @@ function renderEventListeners() {
     for (i = 0; i < removeButtons.length; i++) {
         removeButtons[i].addEventListener('click', remove);
     }
+    let editButtons = document.querySelectorAll('.edit-btn');
+    for(butotn in editButtons){
+        button.addEventListener('click', showPostEditor);
+    }
 }
 
 function remove(event) {
@@ -200,6 +204,10 @@ function remove(event) {
     console.log(key);
     firebase.database().ref('blogposts/' + key).remove();
     firebaseRead();
+}
+
+function showPostEditor(){
+
 }
 
 //Default Calls
